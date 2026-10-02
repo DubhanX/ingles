@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#7c5cff">
+<title>Grammar Quest B1.1</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2d5b;--muted:#6a6f99;--grape:#7c5cff;--grape-d:#5b3fe0;--mint:#2ecc9a;--mint-d:#1fa77c;--sun:#ffc83d;--sun-d:#e0a400;--coral:#ff6b81;--coral-d:#e04960;--edge:#dfe5f5}
+[hidden]{display:none!important}
+body{font-family:'Nunito',system-ui,sans-serif;font-weight:700;color:var(--ink);min-height:100vh;background:linear-gradient(180deg,#dff3ff 0%,#efe9ff 55%,#fff4dc 100%) fixed;-webkit-tap-highlight-color:transparent}
+h1,h2,h3,.disp{font-family:'Fredoka','Nunito',sans-serif;font-weight:600}
+:focus-visible{outline:3px solid var(--grape);outline-offset:3px}
+.card{background:#fff;border:2px solid var(--edge);border-radius:24px;box-shadow:0 6px 0 var(--edge)}
+.btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;color:#fff;background:var(--grape);border:0;border-radius:16px;padding:.8rem 1.4rem;box-shadow:0 5px 0 var(--grape-d);cursor:pointer;transition:transform .08s,box-shadow .08s}
+.btn:active:not(:disabled){transform:translateY(5px);box-shadow:0 0 0 var(--grape-d)}
+.btn:disabled{background:#d8deef;color:#9aa3c2;box-shadow:0 5px 0 #c3cbe3;cursor:not-allowed}
+.btn-mint{background:var(--mint);box-shadow:0 5px 0 var(--mint-d)}.btn-mint:active:not(:disabled){box-shadow:0 0 0}
+.btn-coral{background:var(--coral);box-shadow:0 5px 0 var(--coral-d)}.btn-coral:active:not(:disabled){box-shadow:0 0 0}
+.btn-ghost{background:#fff;color:var(--ink);box-shadow:0 5px 0 var(--edge);border:2px solid var(--edge)}.btn-ghost:active:not(:disabled){box-shadow:0 0 0}
+.chip{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .7rem;border-radius:999px;background:#fff;border:2px solid var(--edge);font-weight:800;font-size:.9rem}
+button.chip{cursor:pointer}
+.logo{width:42px;height:42px;display:grid;place-items:center;font-size:1.5rem;background:var(--sun);border-radius:14px;box-shadow:0 4px 0 var(--sun-d)}
+.track{background:#e6eaf8;border-radius:999px;overflow:hidden}
+.fillbar{height:100%;background:var(--mint);border-radius:999px;transition:width .3s}
+.node{width:92px;height:92px;border:0;border-radius:50%;font-size:2.4rem;background:var(--c);box-shadow:0 8px 0 var(--d);cursor:pointer;transition:transform .08s,box-shadow .08s}
+.node:active{transform:translateY(8px);box-shadow:0 0 0 var(--d)}
+.node[data-lock]{background:#cfd6e8;filter:grayscale(.4)}
+.stars{display:flex;gap:2px;font-size:1.2rem;color:#d3d9ec}.stars .on{color:var(--sun)}
+.stars.big{font-size:3rem;justify-content:center;gap:6px}
+.opt{display:flex;align-items:center;gap:.75rem;width:100%;text-align:left;padding:.9rem 1rem;font:800 1.1rem 'Nunito';color:var(--ink);background:#fff;border:2px solid var(--edge);border-radius:18px;box-shadow:0 4px 0 var(--edge);cursor:pointer;transition:transform .08s,box-shadow .08s}
+.opt kbd{flex:none;width:1.8rem;height:1.8rem;display:grid;place-items:center;border-radius:10px;background:#eef1fb;font:800 .85rem 'Nunito'}
+.opt:active:not(:disabled){transform:translateY(4px);box-shadow:0 0 0 var(--edge)}
+.opt.sel{background:#efeaff;border-color:var(--grape);box-shadow:0 4px 0 var(--grape)}
+.opt.ok{background:#d9f7ec;border-color:var(--mint);box-shadow:0 4px 0 var(--mint)}
+.opt.bad{background:#ffe3e8;border-color:var(--coral);box-shadow:0 4px 0 var(--coral)}
+.opt:disabled{cursor:default}
+.blank{display:inline-block;min-width:5.5ch;height:1.05em;vertical-align:-.15em;margin:0 .15em;background:#ffe9a8;border-bottom:3px solid var(--sun);border-radius:6px}
+mark.fill{background:#bff0dc;color:var(--ink);padding:0 .3em;border-radius:6px}
+.bar{background:#fff;border-top:2px solid var(--edge);transition:background .2s}
+.bar[data-s=ok]{background:#d9f7ec;color:#0f5e44}.bar[data-s=bad]{background:#ffe3e8;color:#8a1f33}
+.tab{flex:none;padding:.45rem .9rem;border-radius:999px;font-weight:800;font-size:.9rem;white-space:nowrap;cursor:pointer;color:var(--ink)}
+.tab:not(.tab-on){background:#eef1fb}.tab-on{color:#fff}
+.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{scrollbar-width:none}
+.cf{position:fixed;top:-6vh;font-size:1.7rem;z-index:80;pointer-events:none;animation:fall 2.4s linear forwards}
+@keyframes fall{to{transform:translateY(112vh) rotate(540deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+.shake{animation:shake .35s}.pop{animation:pop .2s ease-out}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="fixed top-0 inset-x-0 z-30 bg-white/90 backdrop-blur border-b-2 border-[color:var(--edge)]">
+  <div class="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
+    <button onclick="app.exit()" class="flex items-center gap-2" aria-label="Grammar Quest, ir al mapa">
+      <span class="logo" aria-hidden="true">🦊</span>
+      <span class="hidden sm:block text-left leading-none"><span class="disp block text-xl">Grammar Quest</span><span class="text-xs text-[color:var(--muted)]">Inglés B1.1</span></span>
+    </button>
+    <div class="flex items-center gap-2">
+      <span class="chip" title="Tu nivel">Nv. <b id="statLvl">1</b>
+        <span class="track w-10 h-2 inline-block"><span id="lvlBar" class="fillbar block" style="width:0"></span></span></span>
+      <span class="chip" title="Días seguidos">🔥 <b id="statDays">0</b></span>
+      <span class="chip" title="Puntos XP">⭐ <b id="statXp">0</b></span>
+      <button id="muteBtn" class="chip" onclick="app.toggleMute()" aria-label="Activar o silenciar sonido" aria-pressed="false">🔊</button>
+      <button class="chip" onclick="app.openTheory()" aria-label="Abrir teoría">📖</button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-2xl mx-auto px-4 pt-24 pb-44">
+
+  <section id="viewHome" class="space-y-8">
+    <div class="flex items-center gap-3">
+      <div class="card w-16 h-16 flex-none grid place-items-center text-4xl" aria-hidden="true">🦊</div>
+      <div class="card p-4 flex-1"><p id="homeSay" class="font-bold">¡Hola! Elige un nivel del mapa. Con 3 vidas, ¡a por las estrellas!</p></div>
+    </div>
+    <div id="reviewCard" class="card p-4 flex items-center gap-3" style="background:#fff0f3" hidden>
+      <span class="text-3xl" aria-hidden="true">🩹</span>
+      <div class="flex-1"><h2 class="text-lg">Misión de repaso</h2><p id="reviewCount" class="text-sm text-[color:var(--muted)]"></p></div>
+      <button class="btn btn-coral" onclick="app.startReview()">Repasar</button>
+    </div>
+    <div id="path" class="flex flex-col items-center gap-9 py-2"></div>
+    <div class="text-center"><button class="text-sm underline text-[color:var(--muted)]" onclick="app.reset()">Borrar mi progreso</button></div>
+  </section>
+
+  <section id="viewQuiz" class="max-w-xl mx-auto" hidden>
+    <div class="flex items-center gap-3 mb-6">
+      <button onclick="app.exit()" class="chip !px-3" aria-label="Salir de la partida">✕</button>
+      <div class="track h-4 flex-1" role="progressbar" aria-label="Progreso"><div id="progress" class="fillbar" style="width:0"></div></div>
+      <span id="hearts" class="text-xl whitespace-nowrap"></span>
+    </div>
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-lg text-[color:var(--muted)]">Completa la oración</h2>
+      <span id="combo" class="text-sm font-extrabold"></span>
+    </div>
+    <div class="flex items-center gap-3 mb-7">
+      <div id="mascot" class="card w-16 h-16 flex-none grid place-items-center text-4xl" aria-hidden="true">🦊</div>
+      <div class="card p-5 flex-1"><p id="sentence" class="text-xl sm:text-2xl font-extrabold leading-snug"></p></div>
+    </div>
+    <div id="options" class="grid grid-cols-1 sm:grid-cols-2 gap-3" role="group" aria-label="Opciones"></div>
+    <p class="hidden sm:block mt-4 text-sm text-[color:var(--muted)]">Atajos: teclas 1 a 4 para elegir, Enter para continuar.</p>
+  </section>
+
+  <section id="viewResults" class="max-w-xl mx-auto space-y-6" hidden>
+    <div class="text-center">
+      <div id="resEmoji" class="text-7xl pop" aria-hidden="true"></div>
+      <h2 id="resTitle" class="text-3xl sm:text-4xl mt-2"></h2>
+    </div>
+    <div id="resStars" class="stars big" aria-live="polite"></div>
+    <p id="lvlUp" class="card p-3 text-center text-lg" style="background:#fff6d6" hidden></p>
+    <div class="grid grid-cols-3 gap-3 text-center">
+      <div class="card p-3"><p class="text-sm text-[color:var(--muted)]">Aciertos</p><p id="resScore" class="disp text-2xl"></p></div>
+      <div class="card p-3"><p class="text-sm text-[color:var(--muted)]">Precisión</p><p id="resAcc" class="disp text-2xl"></p></div>
+      <div class="card p-3"><p class="text-sm text-[color:var(--muted)]">XP ganado</p><p id="resXp" class="disp text-2xl"></p></div>
+    </div>
+    <div id="missedBox">
+      <h3 class="text-lg mb-2">Para repasar</h3>
+      <ul id="missedList" class="space-y-3"></ul>
+    </div>
+    <div class="flex flex-col gap-3">
+      <button id="againBtn" class="btn btn-mint" onclick="app.again()">Jugar de nuevo</button>
+      <button id="retryBtn" class="btn btn-ghost" onclick="app.retry()">Repetir solo los fallos</button>
+      <button class="btn" onclick="app.exit()">Volver al mapa</button>
+    </div>
+  </section>
+</main>
+
+<div id="quizBar" class="bar fixed bottom-0 inset-x-0 z-20 px-4 pt-4" style="padding-bottom:max(1rem,env(safe-area-inset-bottom))" hidden>
+  <div class="max-w-xl mx-auto flex flex-col sm:flex-row sm:items-center gap-3">
+    <div id="feedback" class="flex-1" role="status" aria-live="polite" hidden>
+      <div class="flex items-center gap-2">
+        <span id="fbIcon" class="w-7 h-7 grid place-items-center rounded-full bg-white font-black" aria-hidden="true"></span>
+        <h3 id="fbTitle" class="text-xl"></h3>
+      </div>
+      <p id="fbText" class="text-sm font-extrabold mt-1"></p>
+      <p id="fbRule" class="text-sm opacity-80"></p>
+      <button id="fbTheory" class="text-sm font-extrabold underline mt-1" hidden>Repasar la teoría de este tema</button>
+    </div>
+    <button id="mainBtn" class="btn sm:min-w-[11rem]" onclick="app.main()" disabled>Comprobar</button>
+  </div>
+</div>
+
+<div id="modal" class="fixed inset-0 z-50 bg-[#2b2d5b]/50 flex items-end sm:items-center justify-center sm:p-4" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="if(event.target===this)app.closeTheory()">
+  <div class="card pop w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden !rounded-b-none sm:!rounded-b-3xl">
+    <div class="p-4 flex items-center justify-between">
+      <h3 id="modalTitle" class="text-xl">Apuntes gramaticales</h3>
+      <button id="modalClose" class="chip !px-3" onclick="app.closeTheory()" aria-label="Cerrar">✕</button>
+    </div>
+    <div id="tabs" class="flex gap-2 overflow-x-auto no-scrollbar px-4 pb-3" role="tablist"></div>
+    <div id="theory" class="p-5 overflow-y-auto flex-1 bg-slate-50"></div>
+  </div>
+</div>
+
+<script>
+const TOPICS = [
+      {
+        id: 'stative', name: 'Stative Verbs', icon: '🧠',
+        color: 'bg-blue-500 border-blue-600', lightColor: 'bg-blue-100 text-blue-500',
+        desc: 'Verbos de estado (pensamiento, emoción). ¡No usan -ing!',
+        theory: `
+          <h4 class="font-black text-blue-500 text-lg mb-2">¿Qué son los Stative Verbs?</h4>
+          <p class="font-semibold text-slate-600 text-sm mb-4">Describen estados, no acciones. <strong>NO llevan -ing</strong> en tiempos continuos.</p>
+          <ul class="space-y-2 text-sm font-bold text-slate-700">
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100">✅ <strong>Pensamiento:</strong> know, believe, understand. <br><span class="text-blue-500 font-black">"I know"</span> (No "I am knowing").</li>
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100">✅ <strong>Emociones:</strong> like, love, hate, want, need.</li>
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100">✅ <strong>Posesión:</strong> have, own, belong.</li>
+          </ul>
+        `
+      },
+      {
+        id: 'gerunds', name: 'Gerunds', icon: '🏃‍♂️',
+        color: 'bg-pink-500 border-pink-600', lightColor: 'bg-pink-100 text-pink-500',
+        desc: 'Verbos terminados en -ing actuando como sustantivos.',
+        theory: `
+          <h4 class="font-black text-pink-500 text-lg mb-2">Reglas de Oro del Gerundio (-ing)</h4>
+          <ul class="space-y-2 text-sm font-bold text-slate-700 mb-4">
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100"><strong>1. Como sujeto:</strong> <span class="text-pink-500">Smoking</span> is bad.</li>
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100"><strong>2. Tras preposiciones (in, of, at, for):</strong> Good at <span class="text-pink-500">playing</span>.</li>
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100"><strong>3. Tras verbos clave:</strong> enjoy, avoid, mind, consider.<br>Ej: I enjoy <span class="text-pink-500">reading</span>.</li>
+          </ul>
+        `
+      },
+      {
+        id: 'adverbs', name: 'Adverbs of Freq.', icon: '⏰',
+        color: 'bg-orange-400 border-orange-500', lightColor: 'bg-orange-100 text-orange-500',
+        desc: 'Always, usually, never. Dónde colocarlos correctamente.',
+        theory: `
+          <h4 class="font-black text-orange-500 text-lg mb-2">Posición del Adverbio</h4>
+          <p class="font-semibold text-slate-600 text-sm mb-4">Escala: Always (100%) > Usually > Often > Sometimes > Rarely > Never (0%).</p>
+          <div class="space-y-3 text-sm font-bold text-slate-700">
+            <div class="bg-white p-3 rounded-xl border-2 border-slate-100">
+              <span class="text-orange-500 font-black">ANTES de verbos normales:</span><br>
+              I <strong>always</strong> eat pizza. (NO "I eat always")
+            </div>
+            <div class="bg-white p-3 rounded-xl border-2 border-slate-100">
+              <span class="text-orange-500 font-black">DESPUÉS del verbo To Be (am/is/are):</span><br>
+              She is <strong>never</strong> late.
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 'presperf', name: 'Present Perfect', icon: '✨',
+        color: 'bg-emerald-500 border-emerald-600', lightColor: 'bg-emerald-100 text-emerald-500',
+        desc: 'Have/has + Participio. Experiencias y Since/For.',
+        theory: `
+          <h4 class="font-black text-emerald-500 text-lg mb-2">Have / Has + Participio Pasado</h4>
+          <p class="font-semibold text-slate-600 text-sm mb-2">Para experiencias de vida o acciones con resultados ahora.</p>
+          <ul class="space-y-2 text-sm font-bold text-slate-700">
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100"><strong>Ever/Never:</strong> Experiencias (<em>Have you ever seen...?</em>)</li>
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100"><strong>Since:</strong> Punto exacto de inicio (<em>Since 2020</em>).</li>
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100"><strong>For:</strong> Duración / Cantidad (<em>For 5 years</em>).</li>
+            <li class="bg-rose-50 text-rose-500 p-3 rounded-xl border-2 border-rose-200">❌ ¡No uses fechas pasadas cerradas! (Ayer = Past Simple).</li>
+          </ul>
+        `
+      },
+      {
+        id: 'presperfcont', name: 'Pres. Perf. Cont.', icon: '⏳',
+        color: 'bg-purple-500 border-purple-600', lightColor: 'bg-purple-100 text-purple-500',
+        desc: 'Have been -ing. Énfasis en el proceso continuo.',
+        theory: `
+          <h4 class="font-black text-purple-500 text-lg mb-2">Have / Has + BEEN + verbo-ing</h4>
+          <p class="font-semibold text-slate-600 text-sm mb-4">Enfoca en la <strong>duración</strong> de una acción inconclusa o que dejó evidencia reciente.</p>
+          <ul class="space-y-2 text-sm font-bold text-slate-700">
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100"><strong>Duración:</strong> I have been working all day.</li>
+            <li class="bg-white p-3 rounded-xl border-2 border-slate-100"><strong>Evidencia física:</strong> Ojos rojos -> <em>Have you been crying?</em></li>
+            <li class="bg-amber-50 text-amber-600 p-3 rounded-xl border-2 border-amber-200">⚠️ ¡Stative Verbs (know, like) no admiten este tiempo!</li>
+          </ul>
+        `
+      },
+      {
+        id: 'demonstratives', name: 'Demonstratives', icon: '👉',
+        color: 'bg-cyan-500 border-cyan-600', lightColor: 'bg-cyan-100 text-cyan-500',
+        desc: 'This, that, these, those. ¿Cerca o lejos?',
+        theory: `
+          <h4 class="font-black text-cyan-500 text-lg mb-4">Cercanía y Lejanía</h4>
+          <div class="grid grid-cols-2 gap-2 text-sm font-bold">
+            <div class="bg-white p-3 rounded-xl border-2 border-slate-100 text-center">
+              <span class="block text-slate-400 mb-1">Singular + Cerca</span>
+              <span class="text-cyan-500 text-xl font-black">THIS</span>
+            </div>
+            <div class="bg-white p-3 rounded-xl border-2 border-slate-100 text-center">
+              <span class="block text-slate-400 mb-1">Plural + Cerca</span>
+              <span class="text-cyan-500 text-xl font-black">THESE</span>
+            </div>
+            <div class="bg-white p-3 rounded-xl border-2 border-slate-100 text-center">
+              <span class="block text-slate-400 mb-1">Singular + Lejos</span>
+              <span class="text-cyan-500 text-xl font-black">THAT</span>
+            </div>
+            <div class="bg-white p-3 rounded-xl border-2 border-slate-100 text-center">
+              <span class="block text-slate-400 mb-1">Plural + Lejos</span>
+              <span class="text-cyan-500 text-xl font-black">THOSE</span>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    const EXERCISES = [
+      // Stative
+      { topicId: 'stative', text: "Right now, I _____ the grammar rules.", options: ["understand", "am understanding", "understands", "understoods"], correct: 0, explanation: "'Understand' es de pensamiento. No lleva -ing.", rule: "Stative Verbs -> Present Simple" },
+      { topicId: 'stative', text: "She _____ three cats.", options: ["is having", "have", "has", "are having"], correct: 2, explanation: "'Have' como posesión no lleva -ing. She -> has.", rule: "Have (posesión) = Estativo" },
+      { topicId: 'stative', text: "This soup _____ delicious!", options: ["is tasting", "tastes", "taste", "tasted"], correct: 1, explanation: "Describir el sabor de algo es un estado.", rule: "Verbos de percepción = Estativos" },
+      { topicId: 'stative', text: "I _____ 50 dollars right now.", options: ["am needing", "needs", "need", "needing"], correct: 2, explanation: "La necesidad ('need') es un estado.", rule: "Need = Estativo" },
+      { topicId: 'stative', text: "He _____ tired.", options: ["is seeming", "seems", "seem", "seeming"], correct: 1, explanation: "'Seem' (parecer) es puramente de estado.", rule: "Seem = Estativo" },
+      
+      // Gerunds
+      { topicId: 'gerunds', text: "_____ exercise is healthy.", options: ["Do", "Doing", "Does", "Did"], correct: 1, explanation: "Verbo como sujeto = Gerundio.", rule: "Sujeto = -ing" },
+      { topicId: 'gerunds', text: "She is good at _____ math.", options: ["solve", "solving", "to solve", "solved"], correct: 1, explanation: "Tras la preposición 'at' va -ing.", rule: "Preposición + -ing" },
+      { topicId: 'gerunds', text: "I enjoy _____ books.", options: ["read", "reading", "to read", "reads"], correct: 1, explanation: "'Enjoy' exige gerundio.", rule: "Enjoy + -ing" },
+      { topicId: 'gerunds', text: "Avoid _____ mistakes.", options: ["to make", "making", "make", "makes"], correct: 1, explanation: "'Avoid' (evitar) exige gerundio.", rule: "Avoid + -ing" },
+      { topicId: 'gerunds', text: "Thank you for _____ me.", options: ["help", "to help", "helping", "helped"], correct: 2, explanation: "Tras preposición 'for' va -ing.", rule: "Preposición + -ing" },
+
+      // Adverbs
+      { topicId: 'adverbs', text: "She _____ late.", options: ["is never", "never is", "never", "is never not"], correct: 0, explanation: "El adverbio va DESPUÉS de 'To be'.", rule: "To Be + Adverbio" },
+      { topicId: 'adverbs', text: "I _____ coffee.", options: ["drink rarely", "rarely drink", "rarely drinks", "am rarely drink"], correct: 1, explanation: "El adverbio va ANTES de un verbo normal.", rule: "Adverbio + Verbo" },
+      { topicId: 'adverbs', text: "They _____ go to the gym.", options: ["usually", "are usually", "usually are", "usually goes"], correct: 0, explanation: "Antes del verbo de acción ('go').", rule: "Adverbio + Verbo" },
+      { topicId: 'adverbs', text: "I _____ hungry after work.", options: ["always am", "am always", "always be", "always are"], correct: 1, explanation: "Después del verbo 'am'.", rule: "To Be + Adverbio" },
+      { topicId: 'adverbs', text: "0% frequency is:", options: ["sometimes", "always", "never", "often"], correct: 2, explanation: "Never significa 'nunca' (0%).", rule: "Never = 0%" },
+
+      // Present Perfect
+      { topicId: 'presperf', text: "Have you ever _____ to Paris?", options: ["go", "went", "been", "was"], correct: 2, explanation: "Participio de 'be' es 'been'.", rule: "Have + V3" },
+      { topicId: 'presperf', text: "I have lived here _____ 2010.", options: ["for", "during", "ago", "since"], correct: 3, explanation: "Punto de inicio en el tiempo = since.", rule: "Since + Fecha de inicio" },
+      { topicId: 'presperf', text: "She has worked here _____ 5 years.", options: ["since", "for", "during", "ago"], correct: 1, explanation: "Cantidad de tiempo (duración) = for.", rule: "For + Cantidad de tiempo" },
+      { topicId: 'presperf', text: "I have _____ finished my homework.", options: ["just", "yet", "ever", "since"], correct: 0, explanation: "'Just' significa 'acabo de'.", rule: "Just = acción recién terminada" },
+      { topicId: 'presperf', text: "Have you eaten _____?", options: ["since", "just", "yet", "ever"], correct: 2, explanation: "'Yet' va al final en preguntas ('¿ya?').", rule: "Yet al final de preguntas" },
+
+      // Present Perfect Continuous
+      { topicId: 'presperfcont', text: "It _____ for hours.", options: ["has been raining", "have been raining", "is raining", "rained"], correct: 0, explanation: "Duración en progreso con It = has been -ing.", rule: "Has been + -ing" },
+      { topicId: 'presperfcont', text: "I am tired. I _____ all day.", options: ["have been working", "have worked", "work", "am working"], correct: 0, explanation: "Causa (cansancio) de un proceso continuo prolongado.", rule: "Proceso/Causa = Perf. Cont." },
+      { topicId: 'presperfcont', text: "How long _____ you _____ waiting?", options: ["has/been", "have/been", "are/been", "did/been"], correct: 1, explanation: "Pregunta con 'You' usa auxiliar Have.", rule: "How long have you been..." },
+      { topicId: 'presperfcont', text: "They _____ playing since 3 PM.", options: ["has been", "have been", "are", "have"], correct: 1, explanation: "They -> Have been.", rule: "They have been + -ing" },
+      { topicId: 'presperfcont', text: "She _____ crying.", options: ["have been", "has been", "is been", "has"], correct: 1, explanation: "She -> Has been.", rule: "She has been + -ing" },
+
+      // Demonstratives
+      { topicId: 'demonstratives', text: "Pass me _____ cup (in my hand).", options: ["this", "that", "these", "those"], correct: 0, explanation: "Singular + Muy cerca = This.", rule: "This = Singular Cerca" },
+      { topicId: 'demonstratives', text: "Look at _____ bird (far in sky).", options: ["this", "that", "these", "those"], correct: 1, explanation: "Singular + Lejos = That.", rule: "That = Singular Lejos" },
+      { topicId: 'demonstratives', text: "I like _____ shoes (I am wearing).", options: ["this", "that", "these", "those"], correct: 2, explanation: "Plural + Cerca = These.", rule: "These = Plural Cerca" },
+      { topicId: 'demonstratives', text: "Who are _____ people (over there)?", options: ["this", "that", "these", "those"], correct: 3, explanation: "Plural + Lejos = Those.", rule: "Those = Plural Lejos" },
+      { topicId: 'demonstratives', text: "Hello, _____ is John (on phone).", options: ["this", "that", "he", "it"], correct: 0, explanation: "Al teléfono nos presentamos con 'This is'.", rule: "This is = Presentación telefónica" },
+      // Ronda 2
+      { topicId: "stative", text: "Do you _____ the answer?", options: ["know", "are knowing", "knowing", "knows"], correct: 0, explanation: "'Know' es verbo de pensamiento: no lleva -ing.", rule: "Know = Estativo" },
+      { topicId: "stative", text: "I _____ that he is right.", options: ["am believing", "believe", "believes", "believing"], correct: 1, explanation: "'Believe' expresa una opinión, es un estado.", rule: "Believe = Estativo" },
+      { topicId: "stative", text: "These flowers _____ wonderful.", options: ["are smelling", "smells", "smell", "smelling"], correct: 2, explanation: "Describir un olor es un estado. Sujeto plural: smell.", rule: "Verbos de percepción = Estativos" },
+      { topicId: "stative", text: "This bag _____ to my sister.", options: ["is belonging", "belong", "belongs", "belonging"], correct: 2, explanation: "'Belong' (pertenecer) es posesión. Con 'this bag' va 's'.", rule: "Belong = Estativo" },
+      { topicId: "stative", text: "I _____ spiders. They scare me.", options: ["am hating", "hate", "hates", "hating"], correct: 1, explanation: "'Hate' es una emoción estable, no lleva -ing.", rule: "Emociones = Estativos" },
+      { topicId: "stative", text: "He _____ a new car, but he never drives it.", options: ["is owning", "owns", "own", "owning"], correct: 1, explanation: "'Own' (poseer) es estativo. He -> owns.", rule: "Own = Estativo" },
+      { topicId: "gerunds", text: "I am looking forward to _____ you.", options: ["see", "seeing", "saw", "seen"], correct: 1, explanation: "En 'look forward to', 'to' es preposición: va -ing.", rule: "Preposición + -ing" },
+      { topicId: "gerunds", text: "She suggested _____ to the cinema.", options: ["to go", "going", "go", "went"], correct: 1, explanation: "'Suggest' exige gerundio.", rule: "Suggest + -ing" },
+      { topicId: "gerunds", text: "He is interested in _____ photography.", options: ["learn", "to learn", "learning", "learned"], correct: 2, explanation: "Tras la preposición 'in' va -ing.", rule: "Preposición + -ing" },
+      { topicId: "gerunds", text: "_____ is my favourite hobby.", options: ["Swim", "Swimming", "To swimming", "Swims"], correct: 1, explanation: "Un verbo como sujeto usa gerundio.", rule: "Sujeto = -ing" },
+      { topicId: "gerunds", text: "I don't mind _____ up early.", options: ["get", "getting", "to get", "got"], correct: 1, explanation: "'Mind' exige gerundio.", rule: "Mind + -ing" },
+      { topicId: "gerunds", text: "They finished _____ the report at noon.", options: ["write", "to write", "writing", "wrote"], correct: 2, explanation: "'Finish' exige gerundio.", rule: "Finish + -ing" },
+      { topicId: "adverbs", text: "He _____ eats breakfast.", options: ["often", "is often", "often is", "does often"], correct: 0, explanation: "Con un verbo normal ('eats'), el adverbio va antes.", rule: "Adverbio + Verbo" },
+      { topicId: "adverbs", text: "We _____ late for class.", options: ["are never", "never are", "never be", "do never be"], correct: 0, explanation: "Con 'to be', el adverbio va después.", rule: "To Be + Adverbio" },
+      { topicId: "adverbs", text: "My parents _____ watch TV in the evening.", options: ["watch usually", "usually watch", "usually watches", "are usually watch"], correct: 1, explanation: "Antes del verbo principal. 'Parents' es plural: watch.", rule: "Adverbio + Verbo" },
+      { topicId: "adverbs", text: "It _____ snows here in summer.", options: ["rarely", "is rarely", "rarely is", "does rarely"], correct: 0, explanation: "'Snows' es verbo normal: el adverbio va antes.", rule: "Adverbio + Verbo" },
+      { topicId: "adverbs", text: "Do you _____ go out on Mondays?", options: ["ever", "never", "seldom is", "are ever"], correct: 0, explanation: "En preguntas se usa 'ever' antes del verbo.", rule: "Ever en preguntas" },
+      { topicId: "adverbs", text: "100% frequency is:", options: ["usually", "always", "often", "never"], correct: 1, explanation: "Always significa 'siempre' (100%).", rule: "Always = 100%" },
+      { topicId: "presperf", text: "I have never _____ sushi.", options: ["eat", "ate", "eaten", "eating"], correct: 2, explanation: "Have + participio de 'eat': eaten.", rule: "Have + V3" },
+      { topicId: "presperf", text: "She has lived here _____ ten years.", options: ["since", "for", "ago", "during"], correct: 1, explanation: "Cantidad de tiempo = for.", rule: "For + Cantidad de tiempo" },
+      { topicId: "presperf", text: "They have known each other _____ childhood.", options: ["for", "since", "ago", "during"], correct: 1, explanation: "Punto de inicio = since.", rule: "Since + Inicio" },
+      { topicId: "presperf", text: "We have _____ to London three times.", options: ["go", "went", "been", "going"], correct: 2, explanation: "Participio de 'be' para visitas: been.", rule: "Have been to = haber ido" },
+      { topicId: "presperf", text: "He _____ his keys. He can't get in.", options: ["has lost", "lose", "is losing", "have lost"], correct: 0, explanation: "Acción pasada con resultado ahora. He -> has.", rule: "Has + V3" },
+      { topicId: "presperf", text: "I _____ her yesterday.", options: ["saw", "have seen", "have been seeing", "see"], correct: 0, explanation: "'Yesterday' es un tiempo pasado cerrado: Past Simple.", rule: "Fecha cerrada = Past Simple" },
+      { topicId: "presperfcont", text: "She _____ English since 2022.", options: ["has been studying", "have been studying", "is studying", "studies"], correct: 0, explanation: "Acción que continúa desde 2022. She -> has been.", rule: "Has been + -ing" },
+      { topicId: "presperfcont", text: "Your eyes are red. _____ you _____?", options: ["Have/been crying", "Has/been crying", "Are/been crying", "Did/been crying"], correct: 0, explanation: "Evidencia reciente de un proceso. You -> Have.", rule: "Evidencia = Perf. Cont." },
+      { topicId: "presperfcont", text: "We _____ for the bus for 30 minutes.", options: ["have been waiting", "has been waiting", "are waiting", "have waiting"], correct: 0, explanation: "Duración de una acción en progreso. We -> have been.", rule: "Have been + -ing" },
+      { topicId: "presperfcont", text: "He _____ football since he was five.", options: ["has been playing", "have been playing", "is playing", "plays"], correct: 0, explanation: "Duración desde un punto de inicio. He -> has been.", rule: "Since + Perf. Cont." },
+      { topicId: "presperfcont", text: "I _____ this book all week, and I'm almost done.", options: ["have been reading", "has been reading", "am reading", "reads"], correct: 0, explanation: "'All week' marca duración hasta ahora.", rule: "Have been + -ing" },
+      { topicId: "presperfcont", text: "How long _____ she _____ here?", options: ["has/been working", "have/been working", "is/been working", "did/been working"], correct: 0, explanation: "She -> has been working.", rule: "How long has she been..." },
+      { topicId: "demonstratives", text: "_____ are my keys (in my hand).", options: ["This", "That", "These", "Those"], correct: 2, explanation: "Plural + cerca = These.", rule: "These = Plural Cerca" },
+      { topicId: "demonstratives", text: "Can you see _____ mountains over there?", options: ["this", "that", "these", "those"], correct: 3, explanation: "Plural + lejos = those.", rule: "Those = Plural Lejos" },
+      { topicId: "demonstratives", text: "How much is _____ jacket (you're holding it)?", options: ["this", "that", "these", "those"], correct: 0, explanation: "Singular + cerca = this.", rule: "This = Singular Cerca" },
+      { topicId: "demonstratives", text: "Look at _____ stars in the sky!", options: ["this", "that", "these", "those"], correct: 3, explanation: "Estrellas lejanas, plural: those.", rule: "Those = Plural Lejos" },
+      { topicId: "demonstratives", text: "Who is _____ man at the door (far away)?", options: ["this", "that", "these", "those"], correct: 1, explanation: "Singular + lejos = that.", rule: "That = Singular Lejos" },
+      { topicId: "demonstratives", text: "Hello, is _____ Maria? (on the phone)", options: ["this", "that", "these", "those"], correct: 1, explanation: "Al preguntar por quien contesta se dice 'Is that...?'. 'This is...' es para presentarte.", rule: "Is that...? = preguntar por el otro" }
+    ];
+</script>
+
+<script>
+// Ejercicios generados: la respuesta correcta va primero y se mezcla en cada partida.
+(function () {
+  const P = (topicId, text, options, rule, explanation) => EXERCISES.push({ topicId, text, options, correct: 0, rule, explanation });
+  [['2015','since'],['three years','for'],['Monday','since'],['a long time','for'],['last summer','since'],['two hours','for'],['I was a child','since'],['ten minutes','for'],['January','since'],['a week','for']]
+    .forEach(([w, a]) => P('presperf', `I have lived here _____ ${w}.`, [a, a === 'for' ? 'since' : 'for', 'ago', 'during'],
+      a === 'for' ? 'For + cantidad de tiempo' : 'Since + inicio', `'${w}' es ${a === 'for' ? 'una duración' : 'un punto de inicio'}: ${a}.`));
+  [['write','wrote','written','writing','a poem'],['see','saw','seen','seeing','a ghost'],['break','broke','broken','breaking','a bone'],['speak','spoke','spoken','speaking','to a famous person'],['drive','drove','driven','driving','a truck'],['eat','ate','eaten','eating','snails'],['give','gave','given','giving','a speech'],['choose','chose','chosen','choosing','the wrong answer'],['ride','rode','ridden','riding','a horse'],['swim','swam','swum','swimming','in the sea']]
+    .forEach(([b, p, pp, g, r]) => P('presperf', `Have you ever _____ ${r}?`, [pp, p, b, g], 'Have + participio (V3)', `El participio de '${b}' es '${pp}'.`));
+  [['enjoys','listen','listening','to music'],['avoids','eat','eating','junk food'],['finished','clean','cleaning','her room'],['suggested','take','taking','a taxi'],['keeps','forget','forgetting','his keys'],['considered','move','moving','abroad'],['practises','speak','speaking','English every day'],['misses','play','playing','with his friends'],['denied','break','breaking','the window']]
+    .forEach(([v, b, g, r]) => P('gerunds', `He ${v} _____ ${r}.`, [g, 'to ' + b, b, b + 's'], 'Verbo + -ing', `Tras '${v}' se usa gerundio (-ing).`));
+  [['want','wanting','a coffee'],['need','needing','some help'],['love','loving','this song'],['prefer','preferring','tea'],['remember','remembering','his name'],['believe','believing','you'],['understand','understanding','the rule'],['hate','hating','mornings']]
+    .forEach(([v, g, o]) => P('stative', `Right now, I _____ ${o}.`, [v, 'am ' + g, v + 's', g], 'Verbo estativo = sin -ing', `'${v}' describe un estado, no lleva -ing.`));
+  [['Tom','is','tired after work','usually'],['I','am','happy on Fridays','always'],['They','are','at home on Sundays','often'],['She','is','rude to people','never'],['We','are','busy in July','sometimes']]
+    .forEach(([s, be, r, a]) => P('adverbs', `${s} _____ ${r}.`, [`${be} ${a}`, `${a} ${be}`, `${a} be`, `do ${a}`], 'To Be + adverbio', `Con 'to be' el adverbio va después: ${be} ${a}.`));
+  [['Anna','goes','go','to the gym','rarely'],['My dad','cooks','cook','dinner','often'],['The teacher','gives','give','homework','always'],['He','drinks','drink','coffee','never'],['Our cat','sleeps','sleep','on the sofa','usually']]
+    .forEach(([s, v, b, r, a]) => P('adverbs', `${s} _____ ${r}.`, [`${a} ${v}`, `${v} ${a}`, `${a} ${b}`, `is ${a} ${b}`], 'Adverbio + verbo', `Con un verbo normal el adverbio va antes: ${a} ${v}.`));
+  [['She','has','studying all night'],['They','have','waiting since noon'],['My brother','has','playing video games for hours'],['We','have','living here since May'],['It','has','snowing all morning'],['The kids','have','running in the garden']]
+    .forEach(([s, a, t]) => P('presperfcont', `${s} _____ ${t}.`, [a + ' been', (a === 'has' ? 'have' : 'has') + ' been', 'is been', a], 'Have/Has been + -ing', `'${s}' pide '${a}': ${a} been + -ing.`));
+  [['book','books'],['pen','pens'],['apple','apples'],['chair','chairs'],['photo','photos'],['bag','bags']].forEach(([s, p], i) =>
+    [[s, i % 2 === 0, 0], [p, i % 2 === 1, 1]].forEach(([n, near, pl]) => {
+      const a = pl ? (near ? 'these' : 'those') : (near ? 'this' : 'that');
+      P('demonstratives', `I love _____ ${n} (${near ? 'right here next to me' : 'far away, over there'}).`,
+        [a, ...['this', 'that', 'these', 'those'].filter(x => x !== a)], `${a} = ${pl ? 'plural' : 'singular'} ${near ? 'cerca' : 'lejos'}`, `${pl ? 'Plural' : 'Singular'} y ${near ? 'cerca' : 'lejos'}: ${a}.`);
+    }));
+})();
+
+const KEY = 'grammarquest:v3';
+const $ = id => document.getElementById(id);
+const day = (back = 0) => new Date(Date.now() - back * 864e5).toLocaleDateString('en-CA');
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const stars = p => p >= 90 ? 3 : p >= 75 ? 2 : p >= 60 ? 1 : 0;
+const lvl = xp => Math.floor(xp / 100) + 1;
+const PAL = { stative: ['#4dabf7', '#2f84d1'], gerunds: ['#ff7eb6', '#d9568f'], adverbs: ['#ffa94d', '#e0821f'], presperf: ['#2ecc9a', '#1fa77c'], presperfcont: ['#9775fa', '#7048e8'], demonstratives: ['#22b8cf', '#1596aa'] };
+const OKS = ['¡Genial!', '¡Eso es!', '¡Perfecto!', '¡Muy bien!'], BADS = ['¡Casi!', 'Ups, mira la regla', 'Esta vez no, ¡a la próxima!'];
+const starRow = n => [1, 2, 3].map(k => `<span class="${k <= n ? 'on' : ''}">★</span>`).join('');
+
+class Sound {
+  constructor() { this.ctx = null; }
+  tone(f1, f2, type, dur) {
+    try {
+      const c = this.ctx = this.ctx || new (window.AudioContext || window.webkitAudioContext)();
+      const t = c.currentTime, o = c.createOscillator(), g = c.createGain();
+      o.type = type; o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + dur / 2);
+      g.gain.setValueAtTime(0.25, t); g.gain.exponentialRampToValueAtTime(0.01, t + dur);
+      o.connect(g); g.connect(c.destination); o.start(); o.stop(t + dur);
+    } catch (e) {}
+  }
+  ok() { this.tone(523, 880, 'sine', 0.3); }
+  bad() { this.tone(220, 110, 'triangle', 0.3); }
+}
+const sound = new Sound();
+
+class App {
+  constructor() {
+    this.d = { xp: 0, days: 0, last: '', best: {}, muted: false, wrong: [] };
+    try { Object.assign(this.d, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
+    Object.assign(this, { quiz: [], i: 0, sel: null, state: 'IDLE', score: 0, xp: 0, combo: 0, missed: [], topicId: null, lastFocus: null, hearts: 3, maxHearts: 3, last: null });
+    this.renderHome(); this.renderTabs(); this.renderStats();
+    document.addEventListener('keydown', e => this.onKey(e));
+  }
+  save() { try { localStorage.setItem(KEY, JSON.stringify(this.d)); } catch (e) {} }
+  shuffle(a) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  fill(text, ans) { const p = ans.split('/'); let n = 0; return text.replace(/_____/g, () => `<mark class="fill">${p[Math.min(n++, p.length - 1)]}</mark>`); }
+  confetti() {
+    for (let k = 0; k < 30; k++) {
+      const s = document.createElement('span');
+      s.className = 'cf'; s.textContent = pick(['🎉', '⭐', '✨', '💜', '🎊']);
+      s.style.left = Math.random() * 100 + 'vw'; s.style.animationDelay = Math.random() * 0.6 + 's';
+      document.body.appendChild(s); setTimeout(() => s.remove(), 3200);
+    }
+  }
+
+  renderStats() {
+    const live = [day(), day(1)].includes(this.d.last) ? this.d.days : 0, w = this.d.wrong.length;
+    $('statDays').textContent = live; $('statXp').textContent = this.d.xp;
+    $('statLvl').textContent = lvl(this.d.xp); $('lvlBar').style.width = (this.d.xp % 100) + '%';
+    $('reviewCard').hidden = !w;
+    $('reviewCount').textContent = w + (w === 1 ? ' pregunta pendiente' : ' preguntas pendientes');
+    $('muteBtn').textContent = this.d.muted ? '🔇' : '🔊'; $('muteBtn').setAttribute('aria-pressed', this.d.muted);
+  }
+  toggleMute() { this.d.muted = !this.d.muted; this.save(); this.renderStats(); }
+
+  renderHome() {
+    const st = id => stars(this.d.best[id] ?? -1);
+    const items = TOPICS.map((t, i) => ({ icon: t.icon, name: t.name, pal: PAL[t.id], s: st(t.id), open: i === 0 || st(TOPICS[i - 1].id) >= 1, act: `app.startTopic('${t.id}')`, id: t.id }));
+    items.push({ icon: '🐉', name: 'Jefe final', pal: ['#ff6b81', '#e04960'], s: 0, open: TOPICS.every(t => st(t.id) >= 1), act: 'app.startBoss()' });
+    $('path').innerHTML = items.map((x, i) => `
+      <div class="flex flex-col items-center" style="transform:translateX(${[0, 56, 0, -56][i % 4]}px)">
+        <button class="node" style="--c:${x.pal[0]};--d:${x.open ? x.pal[1] : '#b3bcd4'}" ${x.open ? '' : 'data-lock'} onclick="${x.open ? x.act : 'app.locked()'}" aria-label="${x.name}${x.open ? '' : ' (bloqueado)'}">${x.open ? x.icon : '🔒'}</button>
+        <p class="disp mt-3 leading-tight text-center max-w-[9rem]">${x.name}</p>
+        <div class="stars" aria-label="${x.s} de 3 estrellas">${starRow(x.s)}</div>
+        ${x.id ? `<button class="text-sm font-extrabold underline text-[color:var(--grape-d)]" onclick="app.openTheory('${x.id}')">Teoría</button>` : ''}
+      </div>`).join('');
+  }
+  locked() { $('homeSay').textContent = 'Este nivel está bloqueado. Consigue al menos 1 estrella (60% de aciertos) en el anterior. En el jefe final, en todos.'; window.scrollTo(0, 0); }
+
+  startTopic(id) { this.startSession(EXERCISES.filter(q => q.topicId === id), 8, id, 3); }
+  startBoss() { this.startSession(EXERCISES, 15, null, 5); }
+  startReview() { const p = EXERCISES.filter(q => this.d.wrong.includes(q.text)); if (p.length) this.startSession(p, Math.min(10, p.length), null, 3); }
+  retry() { this.startSession(this.missed, this.missed.length, null, 3); }
+  again() { const l = this.last; this.startSession(l.pool, l.n, l.topicId, l.hearts); }
+  startSession(pool, n, topicId, hearts) {
+    this.last = { pool, n, topicId, hearts };
+    this.topicId = topicId; this.hearts = this.maxHearts = hearts;
+    this.quiz = this.shuffle(pool).slice(0, n).map(q => ({ ...q, opts: this.shuffle(q.options.map((t, i) => ({ t, ok: i === q.correct }))) }));
+    Object.assign(this, { i: 0, score: 0, xp: 0, combo: 0, missed: [] });
+    this.show('viewQuiz'); this.renderQ();
+  }
+  renderHearts() { $('hearts').innerHTML = '❤️'.repeat(this.hearts) + '🖤'.repeat(this.maxHearts - this.hearts); $('hearts').setAttribute('aria-label', this.hearts + ' vidas'); }
+
+  renderQ() {
+    this.state = 'ANSWERING'; this.sel = null;
+    const q = this.quiz[this.i], bar = $('quizBar'), m = $('mainBtn');
+    $('progress').style.width = (this.i / this.quiz.length * 100) + '%';
+    $('mascot').textContent = '🦊'; this.renderHearts();
+    $('combo').textContent = this.combo >= 2 ? `🔥 Racha de ${this.combo}` : '';
+    $('sentence').innerHTML = q.text.replace(/_____/g, '<span class="blank"></span>');
+    bar.dataset.s = ''; bar.classList.remove('shake'); bar.hidden = false; $('feedback').hidden = true;
+    m.disabled = true; m.textContent = 'Comprobar'; m.className = 'btn sm:min-w-[11rem]';
+    $('options').innerHTML = '';
+    q.opts.forEach((o, k) => {
+      const b = document.createElement('button');
+      b.className = 'opt'; b.innerHTML = `<kbd>${k + 1}</kbd><span>${o.t}</span>`;
+      b.onclick = () => this.select(k); $('options').appendChild(b);
+    });
+  }
+  select(k) {
+    if (this.state !== 'ANSWERING') return;
+    this.sel = k;
+    [...$('options').children].forEach((b, i) => b.classList.toggle('sel', i === k));
+    $('mainBtn').disabled = false; $('mainBtn').focus({ preventScroll: true });
+  }
+  main() { this.state === 'ANSWERING' ? this.check() : this.state === 'FEEDBACK' && this.next(); }
+
+  check() {
+    this.state = 'FEEDBACK';
+    const q = this.quiz[this.i], ok = q.opts[this.sel].ok, right = q.opts.findIndex(o => o.ok), w = this.d.wrong;
+    [...$('options').children].forEach((b, k) => {
+      b.disabled = true; b.classList.remove('sel');
+      if (k === right) b.classList.add('ok'); else if (k === this.sel) b.classList.add('bad');
+    });
+    $('sentence').innerHTML = this.fill(q.text, q.opts[right].t);
+    $('progress').style.width = ((this.i + 1) / this.quiz.length * 100) + '%';
+    if (ok) {
+      const x = w.indexOf(q.text); if (x > -1) w.splice(x, 1);
+      this.score++; this.combo++; this.xp += 10 + (this.combo >= 3 ? 5 : 0);
+      $('mascot').textContent = '🤩'; if (!this.d.muted) sound.ok();
+    } else {
+      if (!w.includes(q.text)) w.push(q.text);
+      this.combo = 0; this.hearts--; this.missed.push(q); this.renderHearts();
+      $('mascot').textContent = '😅'; if (!this.d.muted) sound.bad();
+    }
+    this.save();
+    const bar = $('quizBar'), m = $('mainBtn'), over = this.hearts <= 0 || this.i + 1 >= this.quiz.length;
+    bar.dataset.s = ok ? 'ok' : 'bad'; bar.classList.toggle('shake', !ok);
+    $('fbIcon').textContent = ok ? '✓' : '✕';
+    $('fbTitle').textContent = ok ? pick(OKS) : this.hearts <= 0 ? '¡Sin vidas!' : pick(BADS);
+    $('fbText').textContent = q.explanation; $('fbRule').textContent = q.rule;
+    $('fbTheory').hidden = ok; $('fbTheory').onclick = () => this.openTheory(q.topicId);
+    $('feedback').hidden = false;
+    $('combo').textContent = this.combo >= 2 ? `🔥 Racha de ${this.combo}` : '';
+    m.textContent = over ? 'Ver resultados' : 'Continuar';
+    m.className = 'btn sm:min-w-[11rem] ' + (ok ? 'btn-mint' : 'btn-coral');
+    m.focus({ preventScroll: true });
+  }
+  next() { (this.hearts <= 0 || this.i + 1 >= this.quiz.length) ? this.end() : (this.i++, this.renderQ()); }
+
+  end() {
+    this.state = 'IDLE';
+    const n = this.i + 1, failed = this.hearts <= 0, pct = Math.round(this.score / n * 100), s = failed ? 0 : stars(pct);
+    const before = lvl(this.d.xp); this.d.xp += this.xp; const after = lvl(this.d.xp);
+    if (this.d.last !== day()) { this.d.days = this.d.last === day(1) ? this.d.days + 1 : 1; this.d.last = day(); }
+    if (!failed && this.topicId && pct > (this.d.best[this.topicId] ?? -1)) this.d.best[this.topicId] = pct;
+    this.save(); this.renderStats(); this.renderHome();
+    $('resEmoji').textContent = failed ? '💔' : s === 3 ? '🏆' : s ? '🎉' : '💪';
+    $('resTitle').textContent = failed ? '¡Te quedaste sin vidas!' : s === 3 ? '¡Increíble!' : s === 2 ? '¡Muy bien!' : s === 1 ? '¡Nivel superado!' : 'Casi lo logras';
+    $('resStars').innerHTML = starRow(s);
+    $('lvlUp').hidden = after <= before; $('lvlUp').textContent = `⬆️ ¡Subiste al nivel ${after}!`;
+    $('resScore').textContent = `${this.score}/${n}`; $('resAcc').textContent = pct + '%'; $('resXp').textContent = '+' + this.xp;
+    $('missedBox').hidden = $('retryBtn').hidden = !this.missed.length;
+    $('againBtn').textContent = failed ? 'Intentarlo otra vez' : 'Jugar de nuevo';
+    $('missedList').innerHTML = this.missed.map(q => `<li class="card p-4"><p class="font-extrabold">${this.fill(q.text, q.options[q.correct])}</p><p class="text-sm text-[color:var(--muted)] mt-1">${q.explanation}</p></li>`).join('');
+    this.show('viewResults');
+    if (!failed && s >= 1) this.confetti();
+  }
+
+  show(id) {
+    ['viewHome', 'viewQuiz', 'viewResults'].forEach(v => $(v).hidden = v !== id);
+    $('quizBar').hidden = id !== 'viewQuiz'; window.scrollTo(0, 0);
+  }
+  exit() {
+    if (!$('viewQuiz').hidden && this.i > 0 && !confirm('¿Salir de la partida? Perderás el avance de esta ronda.')) return;
+    this.state = 'IDLE'; $('homeSay').textContent = '¡Bienvenido de nuevo! ¿Qué nivel jugamos ahora?'; this.show('viewHome');
+  }
+  reset() {
+    if (!confirm('¿Borrar XP, nivel, estrellas y días seguidos?')) return;
+    this.d = { xp: 0, days: 0, last: '', best: {}, muted: this.d.muted, wrong: [] };
+    this.save(); this.renderStats(); this.renderHome();
+  }
+
+  openTheory(id) { this.lastFocus = document.activeElement; $('modal').hidden = false; this.tab(id || TOPICS[0].id); $('modalClose').focus(); }
+  closeTheory() { $('modal').hidden = true; if (this.lastFocus && this.lastFocus.focus) this.lastFocus.focus(); }
+  renderTabs() { $('tabs').innerHTML = TOPICS.map(t => `<button id="tab_${t.id}" class="tab" role="tab" onclick="app.tab('${t.id}')">${t.icon} ${t.name}</button>`).join(''); }
+  tab(id) {
+    TOPICS.forEach(t => { const b = $('tab_' + t.id), on = t.id === id; b.className = 'tab' + (on ? ' tab-on ' + t.color.split(' ')[0] : ''); b.setAttribute('aria-selected', on); });
+    $('theory').innerHTML = TOPICS.find(t => t.id === id).theory; $('theory').scrollTop = 0;
+  }
+  onKey(e) {
+    if (!$('modal').hidden) { if (e.key === 'Escape') this.closeTheory(); return; }
+    if ($('viewQuiz').hidden) return;
+    if (this.state === 'ANSWERING' && /^[1-4]$/.test(e.key) && this.quiz[this.i].opts[e.key - 1]) this.select(e.key - 1);
+    else if (e.key === 'Enter' && e.target === document.body && !$('mainBtn').disabled) this.main();
+  }
+}
+const app = new App();
+</script>
+</body>
+</html>
